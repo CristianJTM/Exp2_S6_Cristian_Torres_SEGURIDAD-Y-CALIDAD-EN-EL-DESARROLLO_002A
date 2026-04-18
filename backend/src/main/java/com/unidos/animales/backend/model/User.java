@@ -2,6 +2,8 @@ package com.unidos.animales.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -16,8 +18,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String role;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Adoption> adoptions;
 
     @Column(nullable = false)
     private boolean enabled = true;
@@ -26,10 +32,19 @@ public class User {
 
     }
 
-    public User(String username, String password, String role){
+    public User(String username, String password, Role role, boolean enabled){
         this.username = username;
         this.password = password;
         this.role = role;
+        this.enabled = enabled;
+    }
+
+    public User(String username, String password, Role role, List<Adoption> adoptions,boolean enabled){
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.adoptions = adoptions;
+        this.enabled = enabled;
     }
 
     public Long getId(){
@@ -56,11 +71,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

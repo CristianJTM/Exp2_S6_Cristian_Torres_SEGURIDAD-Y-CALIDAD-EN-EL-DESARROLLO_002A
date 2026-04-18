@@ -2,9 +2,11 @@ package com.unidos.animales.backend.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
-@Table(name = "animals")
-public class Animal {
+@Table(name = "pets")
+public class Pet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,13 +24,26 @@ public class Animal {
     @Column(nullable = false, length = 50)
     private boolean adopted;
 
-    public Animal(){}
+    @OneToMany(mappedBy = "pet")
+    private List<Adoption> adoptions;
 
-    public Animal(String name, String type, int age, boolean adopted){
+    public Pet(){}
+
+    public Pet(Long id, String name, String type, int age, boolean adopted){
+        this.id = id;
         this.name = name;
         this.type = type;
         this.age = age;
         this.adopted = adopted;
+    }
+
+    public Pet(Long id, String name, String type, int age, boolean adopted, List<Adoption> adoptions){
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.age = age;
+        this.adopted = adopted;
+        this.adoptions = adoptions;
     }
 
     public Long getId() {
