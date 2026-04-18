@@ -19,30 +19,30 @@ public class Pet {
     private String type;
 
     @Column(nullable = false, length = 50)
-    private int age;
+    private Integer age;
 
     @Column(nullable = false, length = 50)
-    private boolean adopted;
+    private String status;
 
     @OneToMany(mappedBy = "pet")
     private List<Adoption> adoptions;
 
     public Pet(){}
 
-    public Pet(Long id, String name, String type, int age, boolean adopted){
+    public Pet(Long id, String name, String type, Integer age, String status){
         this.id = id;
         this.name = name;
         this.type = type;
         this.age = age;
-        this.adopted = adopted;
+        this.status = status;
     }
 
-    public Pet(Long id, String name, String type, int age, boolean adopted, List<Adoption> adoptions){
+    public Pet(Long id, String name, String type, Integer age, String status, List<Adoption> adoptions){
         this.id = id;
         this.name = name;
         this.type = type;
         this.age = age;
-        this.adopted = adopted;
+        this.status = status;
         this.adoptions = adoptions;
     }
 
@@ -70,7 +70,7 @@ public class Pet {
         this.type = type;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
@@ -78,11 +78,11 @@ public class Pet {
         this.age = age;
     }
 
-    public boolean isAdopted() {
-        return adopted;
+    public String getStatus() {
+        return status;
     }
 
-    public void setAdopted(boolean adopted) {
-        this.adopted = adopted;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
