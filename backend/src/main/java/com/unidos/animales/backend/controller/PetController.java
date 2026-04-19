@@ -2,7 +2,7 @@ package com.unidos.animales.backend.controller;
 
 
 import com.unidos.animales.backend.model.Pet;
-import com.unidos.animales.backend.security.PetService;
+import com.unidos.animales.backend.service.PetService;
 import jakarta.validation.Valid;
 import com.unidos.animales.backend.repository.PetRepository;
 import jakarta.validation.constraints.Min;
@@ -15,13 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 public class PetController {
-
-    @Autowired
-    private PetRepository petRepository;
 
     @Autowired
     private PetService petService;

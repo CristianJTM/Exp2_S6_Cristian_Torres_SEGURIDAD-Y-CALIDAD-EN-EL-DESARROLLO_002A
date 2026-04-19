@@ -1,5 +1,7 @@
 package com.unidos.animales.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -18,13 +20,14 @@ public class Pet {
     @Column(nullable = false, length = 50)
     private String type;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private Integer age;
 
     @Column(nullable = false, length = 50)
     private String status;
 
     @OneToMany(mappedBy = "pet")
+    @JsonIgnore
     private List<Adoption> adoptions;
 
     public Pet(){}

@@ -1,18 +1,12 @@
-package com.unidos.animales.backend.security;
+package com.unidos.animales.backend.service;
 
 
 import com.unidos.animales.backend.model.Pet;
 import com.unidos.animales.backend.exception.*;
 import com.unidos.animales.backend.repository.PetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PetService {

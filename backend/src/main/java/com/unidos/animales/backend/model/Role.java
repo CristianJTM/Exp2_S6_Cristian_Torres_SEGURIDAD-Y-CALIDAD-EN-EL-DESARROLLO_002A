@@ -1,6 +1,7 @@
 package com.unidos.animales.backend.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class Role {
     private String description;
 
     @OneToMany(mappedBy = "role")
+    @JsonIgnore
     private List<User> users;
 
     public Role(){
