@@ -37,6 +37,13 @@ public class Adoption {
         this.time = time;
     }
 
+    public Adoption(Pet pet, User user, String date, String time) {
+        this.pet = pet;
+        this.user = user;
+        this.date = date;
+        this.time = time;
+    }
+
     public Long getId() {
         return id;
     }

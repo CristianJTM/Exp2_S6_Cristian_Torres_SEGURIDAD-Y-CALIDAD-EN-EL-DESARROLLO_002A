@@ -40,6 +40,13 @@ public class Pet {
         this.status = status;
     }
 
+    public Pet( String name, String type, Integer age, String status){
+        this.name = name;
+        this.type = type;
+        this.age = age;
+        this.status = status;
+    }
+
     public Pet(Long id, String name, String type, Integer age, String status, List<Adoption> adoptions){
         this.id = id;
         this.name = name;
