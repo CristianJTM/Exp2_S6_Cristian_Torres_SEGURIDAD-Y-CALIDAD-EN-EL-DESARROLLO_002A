@@ -7,6 +7,14 @@ function getToken() {
     return localStorage.getItem("jwtToken");
 }
 
+// 🚫 Redirigir si no hay token
+function checkAuth() {
+    const token = getToken();
+    if (!token) {
+        window.location.href = "/adoptions";
+    }
+}
+
 // 🚀 INIT
 document.addEventListener("DOMContentLoaded", () => {
     loadPets();
