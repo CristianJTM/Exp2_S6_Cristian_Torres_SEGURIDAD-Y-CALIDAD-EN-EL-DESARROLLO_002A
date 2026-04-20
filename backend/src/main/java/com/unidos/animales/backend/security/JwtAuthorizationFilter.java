@@ -20,57 +20,106 @@ import static com.unidos.animales.backend.security.Constants.*;
 
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private Claims setSigningKey(HttpServletRequest request) {
-        String jwtToken = request.
-                getHeader(HEADER_AUTHORIZACION_KEY).
-                replace(TOKEN_BEARER_PREFIX, "");
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+        System.out.println("🔥 FILTER START");
+        System.out.println("PATH = " + request.getServletPath());
 
-        return Jwts.parser()
-                .verifyWith((SecretKey) getSigningKey(SUPER_SECRET_KEY))
-                .build()
-                .parseSignedClaims(jwtToken)
-                .getPayload();
+        try {
+            System.out.println("AUTH = " + request.getHeader("Authorization"));
+        } catch (Exception e) {
+            System.out.println("❌ HEADER ERROR: " + e.getMessage());
+        }
+        System.out.println("=== JWT FILTER DEBUG ===");
+        System.out.println("PATH = " + request.getServletPath());
+        System.out.println("METHOD = " + request.getMethod());
+        System.out.println("AUTH HEADER = " + request.getHeader("Authorization"));
+        System.out.println("AUTH CONTEXT BEFORE = " + SecurityContextHolder.getContext().getAuthentication());
 
+        System.out.println("==== TOKEN DEBUG ====");
+        System.out.println("HEADER = " + request.getHeader("Authorization"));
+        System.out.println("FILTER PATH = " + request.getServletPath());
+        System.out.println("SECURITY CONTEXT BEFORE = " + SecurityContextHolder.getContext().getAuthentication());
+
+
+
+        String path = request.getServletPath();
+
+        // ✅ 1. RUTAS PÚBLICAS (NO pasan por JWT)
+        if (isPublicEndpoint(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        try {
+            System.out.println("🔥 TRY JWT PARSE");
+            String header = request.getHeader(HEADER_AUTHORIZACION_KEY);
+
+            // ✅ 2. SOLO validar si hay token
+            if (header != null && header.startsWith(TOKEN_BEARER_PREFIX)) {
+
+                String token = header.replace(TOKEN_BEARER_PREFIX, "").trim();
+                System.out.println("TOKEN RAW = " + token);
+                System.out.println("SECRET = " + SECRET);
+                Claims claims = Jwts.parser()
+                        .verifyWith((SecretKey) getSigningKey(SECRET))
+                        .build()
+                        .parseSignedClaims(token)
+                        .getPayload();
+
+                System.out.println("CLAIMS = " + claims);
+                System.out.println("AUTHORITIES RAW = " + claims.get("authorities"));
+                System.out.println("TYPE = " + claims.get("authorities").getClass());
+
+                setAuthentication(claims);
+                System.out.println("AUTH AFTER SET = " + SecurityContextHolder.getContext().getAuthentication());
+            }
+
+            // ✔ SI NO HAY TOKEN → simplemente sigue (Spring decide si permite o no)
+
+            filterChain.doFilter(request, response);
+
+        } catch (Exception e) {
+            System.out.println("💥 JWT GENERAL ERROR = " + e.getClass());
+            System.out.println("💥 MSG = " + e.getMessage());
+            e.printStackTrace();
+
+            SecurityContextHolder.clearContext();
+
+            filterChain.doFilter(request, response); // 👈 clave
+        }
     }
 
     private void setAuthentication(Claims claims) {
+        System.out.println("✔ AUTH USER = " + claims.getSubject());
+        System.out.println("✔ AUTH ROLES = " + claims.get("authorities"));
+        List<String> authorities = claims.get("authorities", List.class);
 
-        List<String> authorities = (List<String>) claims.get("authorities");
+        if (authorities == null) {
+            authorities = List.of("user");
+        }
 
         UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
-                        authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+                new UsernamePasswordAuthenticationToken(
+                        claims.getSubject(),
+                        null,
+                        authorities.stream()
+                                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                                .toList()
+                );
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 
+        System.out.println("✔ AUTH SET: " + auth);
     }
 
-    private boolean isJWTValid(HttpServletRequest request, HttpServletResponse res) {
-        String authenticationHeader = request.getHeader(HEADER_AUTHORIZACION_KEY);
-        if (authenticationHeader == null || !authenticationHeader.startsWith(TOKEN_BEARER_PREFIX))
-            return false;
-        return true;
-    }
-
-    @Override
-    protected void doFilterInternal(@SuppressWarnings("null") HttpServletRequest request, @SuppressWarnings("null") HttpServletResponse response, @SuppressWarnings("null") FilterChain filterChain) throws ServletException, IOException {
-        try {
-            if (isJWTValid(request, response)) {
-                Claims claims = setSigningKey(request);
-                if (claims.get("authorities") != null) {
-                    setAuthentication(claims);
-                } else {
-                    SecurityContextHolder.clearContext();
-                }
-            } else {
-                SecurityContextHolder.clearContext();
-            }
-            filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
-            return;
-        }
+    private boolean isPublicEndpoint(String path) {
+        return path.startsWith("/login")
+                || path.startsWith("/api/auth/login"); // 👈 ajusta si quieres público
     }
 }
 

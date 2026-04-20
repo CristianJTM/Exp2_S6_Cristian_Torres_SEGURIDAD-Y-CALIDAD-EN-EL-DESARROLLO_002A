@@ -10,10 +10,10 @@ import java.util.List;
 
 @Component
 public class JwtUtil {
-    private static final String SECRET = "clave_super_secreta_123456789012345";
+
 
     public String generateToken(String username, String role) {
-        SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+        SecretKey key = Keys.hmacShaKeyFor(Constants.SECRET.getBytes());
 
         return Jwts.builder()
                 .subject(username)

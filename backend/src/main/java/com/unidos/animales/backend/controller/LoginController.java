@@ -61,6 +61,7 @@ public class LoginController {
                 user.getUsername(),
                 user.getRole().getName()
         );
+        System.out.println("🔥 TOKEN GENERATED = " + token);
 
         // ✅ respuesta
         LoginResponse response = new LoginResponse(
