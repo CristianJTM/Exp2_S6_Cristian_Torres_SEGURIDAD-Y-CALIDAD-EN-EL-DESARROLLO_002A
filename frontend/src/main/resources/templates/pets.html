@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Mascotas en Adopción</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <script th:src="@{/js/pets.js}" defer></script>
+</head>
+<body>
+<div class="page-container">
+
+    <h1>Mascotas en adopción</h1>
+
+    <div class="actions">
+        <a class="btn btn-primary" th:href="@{/pets/new}">Registrar mascota</a>
+        <a class="btn btn-secondary" th:href="@{/home}">Volver a inicio</a>
+    </div>
+
+    <!-- 🔍 Filtros simples -->
+    <form id="searchForm" style="margin-bottom: 1rem;">
+        <div>
+            <label>Tipo:</label>
+            <input type="text" id="type" placeholder="Perro, Gato..." />
+        </div>
+
+        <div>
+            <label>Estado:</label>
+            <select id="status">
+                <option value="">Todos</option>
+                <option value="DISPONIBLE">Disponible</option>
+                <option value="ADOPTADO">Adoptado</option>
+                <option value="EN_PROCESO">En proceso</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Edad:</label>
+            <input type="number" id="age" min="0" />
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Buscar</button>
+            <button class="btn btn-secondary" type="button" id="btnReset">Limpiar</button>
+            <button class="btn btn-secondary" type="button" id="btnLoadAll">Ver todas</button>
+        </div>
+    </form>
+
+    <div id="petsMessage"></div>
+
+    <!-- 📋 TABLA -->
+    <div class="table-wrapper">
+        <table class="patients-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Edad</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="petsTableBody">
+            <tr><td colspan="6">Cargando datos...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>

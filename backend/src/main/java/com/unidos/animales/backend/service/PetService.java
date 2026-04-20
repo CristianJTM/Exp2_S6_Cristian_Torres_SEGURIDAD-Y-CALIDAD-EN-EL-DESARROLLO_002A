@@ -39,9 +39,13 @@ public class PetService {
     }
 
     public void deletePet(Long id) {
-        if (!petRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Mascota no encontrada");
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Mascota no encontrada"));
+
+        if ("ADOPTADO".equalsIgnoreCase(pet.getStatus())) {
+            throw new RuntimeException("No se puede eliminar una mascota adoptada");
         }
+
 
         petRepository.deleteById(id);
     }
