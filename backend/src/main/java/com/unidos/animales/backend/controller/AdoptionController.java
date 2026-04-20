@@ -1,5 +1,7 @@
 package com.unidos.animales.backend.controller;
 
+import com.unidos.animales.backend.dto.AdoptionRequestDTO;
+import com.unidos.animales.backend.dto.AdoptionResponseDTO;
 import com.unidos.animales.backend.model.Adoption;
 import com.unidos.animales.backend.service.AdoptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +21,21 @@ public class AdoptionController {
     private AdoptionService adoptionService;
 
     @PostMapping
-    public ResponseEntity<Adoption> createAdoption(@RequestBody Adoption adoption) {
-        Adoption saved = adoptionService.createAdoption(adoption);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    public ResponseEntity<AdoptionResponseDTO> createAdoption(
+            @RequestBody AdoptionRequestDTO dto) {
+
+        Adoption saved = adoptionService.createAdoption(dto);
+
+        AdoptionResponseDTO response = new AdoptionResponseDTO();
+        response.setId(saved.getId());
+        response.setUserId(saved.getUser().getId());
+        response.setUsername(saved.getUser().getUsername());
+        response.setPetId(saved.getPet().getId());
+        response.setPetName(saved.getPet().getName());
+        response.setDate(saved.getDate());
+        response.setTime(saved.getTime());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Adopciones</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <script th:src="@{/js/adoptions.js}" defer></script>
+</head>
+
+<body>
+<div class="page-container">
+
+    <h1>Gestión de Adopciones</h1>
+
+    <div class="actions">
+        <a class="btn btn-primary" th:href="@{/pets}">Ver mascotas</a>
+        <a class="btn btn-secondary" th:href="@{/home}">Volver a inicio</a>
+    </div>
+
+    <!-- 📌 FORMULARIO DE ADOPCIÓN -->
+    <form id="adoptionForm" style="margin-bottom: 2rem;">
+
+        <div>
+            <label>Mascota:</label>
+            <select id="petSelect" required></select>
+        </div>
+
+        <div>
+            <label>Usuario:</label>
+            <select id="userSelect" required></select>
+        </div>
+
+        <div>
+            <label>Fecha:</label>
+            <input type="date" id="date" required />
+        </div>
+
+        <div>
+            <label>Hora:</label>
+            <input type="time" id="time" required />
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Crear adopción</button>
+        </div>
+    </form>
+
+    <div id="adoptionMessage"></div>
+
+    <!-- 📋 TABLA DE ADOPCIONES -->
+    <div class="table-wrapper">
+        <table class="patients-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Mascota</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+
+            <tbody id="adoptionTableBody">
+            <tr><td colspan="6">Cargando adopciones...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.unidos.animales.backend.service;
 
+import com.unidos.animales.backend.dto.AdoptionRequestDTO;
 import com.unidos.animales.backend.exception.BadRequestException;
 import com.unidos.animales.backend.exception.ResourceNotFoundException;
 import com.unidos.animales.backend.model.Adoption;
@@ -25,32 +26,26 @@ public class AdoptionService {
     @Autowired
     private UserRepository userRepository;
 
-    public Adoption createAdoption(Adoption adoption) {
+    public Adoption createAdoption(AdoptionRequestDTO dto) {
 
-        if (adoption.getPet() == null || adoption.getPet().getId() == null) {
-            throw new BadRequestException("Debe especificar una mascota");
-        }
-
-        if (adoption.getUser() == null || adoption.getUser().getId() == null) {
-            throw new BadRequestException("Debe especificar un usuario");
-        }
-
-        Pet pet = petRepository.findById(adoption.getPet().getId())
+        Pet pet = petRepository.findById(dto.getPetId())
                 .orElseThrow(() -> new ResourceNotFoundException("Mascota no encontrada"));
 
-        User user = userRepository.findById(adoption.getUser().getId())
+        User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
         if (!"DISPONIBLE".equalsIgnoreCase(pet.getStatus())) {
             throw new BadRequestException("La mascota no está disponible para adopción");
         }
 
-        // 🔥 actualizar estado
         pet.setStatus("ADOPTADO");
         petRepository.save(pet);
 
+        Adoption adoption = new Adoption();
         adoption.setPet(pet);
         adoption.setUser(user);
+        adoption.setDate(dto.getDate());
+        adoption.setTime(dto.getTime());
 
         return adoptionRepository.save(adoption);
     }
