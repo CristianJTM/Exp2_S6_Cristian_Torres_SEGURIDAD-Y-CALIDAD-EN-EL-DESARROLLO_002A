@@ -28,13 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/home").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/css/**", "/js/**").permitAll()
-
-                        // login API (frontend → backend)
-                        .requestMatchers("/api/auth/**").permitAll()
-
-                        // llamadas al backend (las validas con JWT en backend)
                         .requestMatchers("/api/**").permitAll()
-
                         .anyRequest().permitAll()
                 )
 
@@ -59,9 +53,6 @@ public class SecurityConfig {
                         .frameOptions(frame -> frame.deny())
                 );
 
-        // ❌ IMPORTANTE: NO formLogin
-        // ❌ NO logout
-        // ❌ NO httpBasic
 
         return http.build();
     }
